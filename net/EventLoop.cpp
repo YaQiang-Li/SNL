@@ -14,10 +14,10 @@ EventLoop::~EventLoop()
     delete epoll_;
 }
 
-void EventLoop::loop()
+void EventLoop::loop(int flags)
 {
-    loopQuit_ = false;
-    while ( !loopQuit_  ) {
+    loopDone_ = flags & EVLOOP_ONESHOT;
+    do {
         activeEvents_.clear();
         epoll_->epollWait(&activeEvents_);
 #ifdef DEBUG
@@ -30,12 +30,31 @@ void EventLoop::loop()
                 it != activeEvents_.end(); ++it) {
             handleEvent(*it);
         }
-    }
+        callPending();
+    } while( !loopDone_ );
 }
 
 void EventLoop::handleEvent(Event* events)
 {
-    if (events) {
+    int flag = events->events;
+    if (flag & EPOLLRDHUP) {
 
     }
+
+    if (flag & EPOLLIN) {
+
+    }
+
+    if (flag & EPOLLOUT) {
+
+    }
+
+    if (flag & (EPOLLPRI | EPOLLERR | EPOLLHUP)){
+
+    }
+}
+
+void EventLoop::callPending()
+{
+
 }

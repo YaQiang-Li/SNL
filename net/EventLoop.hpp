@@ -11,12 +11,12 @@ class EventLoop
 public:
     EventLoop();
     ~EventLoop();
-    void loop();
+    void loop(int flags);
 private:
     void handleEvent(Event* events);
 
     Epoll* epoll_;
-    bool loopQuit_;
+    bool loopDone_;
     EventArray activeEvents_;
 };
 

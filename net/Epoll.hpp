@@ -5,6 +5,8 @@
 #include "EventDefine.h"
 #include <vector>
 #include <iostream>
+#include <sys/epoll.h>
+#include <unistd.h>
 
 class Epoll {
     public:

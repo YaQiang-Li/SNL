@@ -1,8 +1,6 @@
 
 #include "Epoll.hpp"
 
-#include <sys/epoll.h>
-#include <unistd.h>
 
 Epoll::Epoll()
     : epollFd_(::epoll_create(256))
