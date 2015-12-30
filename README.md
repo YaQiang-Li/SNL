@@ -4,7 +4,7 @@ Simple Network Library is a reactor base network library using c++
 
 It's influenced by [muduo](https://github.com/chenshuo/muduo) and [libev](http://software.schmorp.de/pkg/libev.html), but it's more simple.
 
-
+It runs on Linux with kernel version >= 2.6.28.
 
 Copyright (c) 2015, Shiyang Wang. All rights reserved.
 
