@@ -1,6 +1,6 @@
 # SNL
 
-SNL is Simple Network Library using epoll events and no-blocking programing.
+Simple Network Library is a reactor base network library using c++
 
 It's influenced by [muduo](https://github.com/chenshuo/muduo) and [libev](http://software.schmorp.de/pkg/libev.html), but it's more simple.
 
