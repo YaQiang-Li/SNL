@@ -1,6 +1,6 @@
 
 #include "EventLoop.hpp"
-
+#include "TcpConnection.h"
 
 
 EventLoop::EventLoop() :
@@ -38,19 +38,19 @@ void EventLoop::handleEvent(Event* events)
 {
     int flag = events->events;
     if (flag & EPOLLRDHUP) {
-
+        TcpConnection::handleClose();
     }
 
     if (flag & EPOLLIN) {
-
+        TcpConnection::handleRead();
     }
 
     if (flag & EPOLLOUT) {
-
+        TcpConnection::handleWrite();
     }
 
     if (flag & (EPOLLPRI | EPOLLERR | EPOLLHUP)){
-
+        TcpConnection::handleError();
     }
 }
 
