@@ -8,17 +8,21 @@
 #include "TcpServer.h"
 #include "TcpConnection.h"
 
-void onConnection(const TcpConnectionPtr& conn)
+void onConnection(const TcpConnection* & conn)
 {
+    std::cout << "onConnection" << std::endl;
+    return ;
+    /*
     if (conn->connected())
     {
         conn->setTcpNoDelay(true);
-    }
+    }*/
 }
 
-void onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp)
+void onMessage(const TcpConnection* & conn, Buffer* buf, Timestamp)
 {
-    conn->send(buf);
+    std::cout << "onMessage" << std::endl;
+    return ;
 }
 
 int main(int argc, char* argv[])

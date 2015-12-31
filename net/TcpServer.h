@@ -39,16 +39,19 @@ public:
 
 
 private:
-    void newConnection(int sockfd,/* const InetAddress& peerAddr*/);
+    void newConnection(int sockfd/* const InetAddress& peerAddr*/);
+
+    void removeConnection(const TcpConnection* & conn);
+
 
     typedef std::map<std::string, TcpConnection*> ConnectionMap;
     ConnectionMap connections_;
     std::string name_;
     std::string hostport_;
     int nextConnId_;
-    int connectionCallback_;
-    int messageCallback_;
-    int writeCompleteCallback_;
+    ConnectionCallback connectionCallback_;
+    MessageCallback messageCallback_;
+    WriteCompleteCallback writeCompleteCallback_;
 };
 
 

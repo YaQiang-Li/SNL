@@ -15,7 +15,7 @@ TcpServer::~TcpServer()
 
 }
 
-void TcpServer::newConnection(int sockfd,/* const InetAddress& peerAddr*/)
+void TcpServer::newConnection(int sockfd/*,const InetAddress& peerAddr*/)
 {
     char buf[32];
     std::cout << buf << sizeof buf << hostport_ << nextConnId_ << std::endl;
@@ -40,10 +40,16 @@ void TcpServer::newConnection(int sockfd,/* const InetAddress& peerAddr*/)
     conn->setConnectionCallback(connectionCallback_);
     conn->setMessageCallback(messageCallback_);
     conn->setWriteCompleteCallback(writeCompleteCallback_);
+    conn->setCloseCallback(&TcpServer::removeConnection);
 
-    //conn->setCloseCallback(
     //        boost::bind(&TcpServer::removeConnection, this, _1));
 
 
     //ioLoop->runInLoop(boost::bind(&TcpConnection::connectEstablished, conn));
+}
+
+void TcpServer::removeConnection(const TcpConnection* & conn)
+{
+    connections_.erase(conn->getName());
+    delete conn;
 }
