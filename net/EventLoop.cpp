@@ -1,6 +1,6 @@
 
 #include "EventLoop.hpp"
-#include "TcpConnection.h"
+#include "TcpServer.h"
 
 
 EventLoop::EventLoop() :
@@ -30,7 +30,7 @@ void EventLoop::loop(int flags)
                 it != activeEvents_.end(); ++it) {
             handleEvent(*it);
         }
-        callPending();
+        //callPending();
     } while( !loopDone_ );
 }
 
@@ -38,22 +38,30 @@ void EventLoop::handleEvent(Event* events)
 {
     int flag = events->events;
     if (flag & EPOLLRDHUP) {
-        TcpConnection::handleClose();
+        server_->EventClose();
     }
 
     if (flag & EPOLLIN) {
-        TcpConnection::handleRead();
+        server_->EventRead();
     }
 
     if (flag & EPOLLOUT) {
-        TcpConnection::handleWrite();
+        server_->EventWrite();
     }
 
     if (flag & (EPOLLPRI | EPOLLERR | EPOLLHUP)){
-        TcpConnection::handleError();
+        server_->EventError();
     }
 }
 
+void EventLoop::updateChannel()
+{
+    int a;
+    epoll_->epollAdd();
+    epoll_->epollModify();
+    epoll_->epollDelete();
+    epoll_->epollUpdate();
+}
 void EventLoop::callPending()
 {
 

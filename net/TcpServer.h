@@ -5,6 +5,7 @@
 #ifndef SNL_NET_TCPSERVER_H
 #define SNL_NET_TCPSERVER_H
 #include "TcpConnection.h"
+#include "EventLoop.hpp"
 #include <string>
 #include <map>
 #include <iostream>
@@ -13,8 +14,13 @@
 class TcpServer {
 
 public:
-    TcpServer();
+    TcpServer(EventLoop* loop);
     virtual ~TcpServer();
+
+    void EventRead();
+    void EventWrite();
+    void EventClose();
+    void EventError();
 
     /// Starts the server if it's not listenning.
     ///
@@ -37,12 +43,10 @@ public:
     void setWriteCompleteCallback(const WriteCompleteCallback& cb)
     { writeCompleteCallback_ = cb; }
 
-
 private:
     void newConnection(int sockfd/* const InetAddress& peerAddr*/);
-
     void removeConnection(const TcpConnection* & conn);
-
+    TcpConnection* findConnection();
 
     typedef std::map<std::string, TcpConnection*> ConnectionMap;
     ConnectionMap connections_;
@@ -52,6 +56,10 @@ private:
     ConnectionCallback connectionCallback_;
     MessageCallback messageCallback_;
     WriteCompleteCallback writeCompleteCallback_;
+    EventLoop* loop_;
+    string name_;
+    int listenfd_
+    Event accpetEvent_;
 };
 
 

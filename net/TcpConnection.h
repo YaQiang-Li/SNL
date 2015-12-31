@@ -41,10 +41,7 @@ public:
     //void setErrorCallBack_(errorCallback cb)
     //{ errorCallBack_ = cb; }
 
-    static void handleRead();
-    static void handleWrite();
-    static void handleClose();
-    static void handleError();
+
 
     void setConnectionCallback(ConnectionCallback cb)
     { connectionCallback_ = cb; }
@@ -64,19 +61,24 @@ public:
     void setName(const std::string &name_)
     { TcpConnection::name_ = name_; }
 
+    void handleRead(int receiveTime);
+    void handleWrite();
+    void handleClose();
+    void handleError();
+
 private:
+
+    //void newConnection(int sockfd/* const InetAddress& peerAddr*/);
+    //void removeConnection(const TcpConnection* & conn);
     //Buffer inputBuffer_;
     //Buffer outputBuffer_;
-
-    enum StateE { kDisconnected, kConnecting, kConnected, kDisconnecting };
+    enum StateE { kListening, kDisconnected, kConnecting, kConnected, kDisconnecting };
 
     MessageCallback messageCallback_;
     CloseCallback closeCallback_;
     WriteCompleteCallback writeCompleteCallback_;
     ConnectionCallback connectionCallback_;
-
-
-private:
+    StateE state_;
     std::string name_;
 
     //readCallback readCallBack_;

@@ -41,14 +41,21 @@ int main(int argc, char* argv[])
         //InetAddress listenAddr(ip, port);
         //int threadCount = atoi(argv[3]);
 
+
+
+
+
+
+
         EventLoop loop;
 
-        TcpServer server(&loop, listenAddr, "PingPong");
+        //TcpServer server(&loop, listenAddr, "PingPong");
+        TcpServer server(&loop);
 
         server.setConnectionCallback(onConnection);
         server.setMessageCallback(onMessage);
 
-        server.start();
+        //server.start();
 
         loop.loop(0);
     }

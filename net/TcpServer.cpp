@@ -4,15 +4,83 @@
 
 #include "TcpServer.h"
 #include "TcpConnection.h"
+#include "EventLoop.hpp"
 
-TcpServer::TcpServer()
+//FIXME: check_not_null is not implement
+#define CHECK_NOTNULL
+
+TcpServer::TcpServer(EventLoop* loop)
+    :loop_(CHECK_NOTNULL(loop)),
+     listenfd_(socket(AF_INET,SOCK_STREAM,0))
+                     //const InetAddress& listenAddr,
+                     //const string& nameArg)
 {
+    loop_->setServer(this);
 
+    //struct sockaddr_in clientaddr;
+    //struct sockaddr_in serveraddr;
+    //int listenfd = socket(AF_INET, SOCK_STREAM, 0);
+    //把socket设置为非阻塞方式
+    //setnonblocking(listenfd);
+    //设置与要处理的事件相关的文件描述符
+    accpetEvent_.data.fd = listenfd_;
+    accpetEvent_.events = EPOLLIN|EPOLLET;
+
+    //ev.data.fd=listenfd_;
+    //设置要处理的事件类型
+    //ev.events=
+
+    loop_->updateChannel();
+    //注册epoll事件
+    //epoll_ctl(epfd,EPOLL_CTL_ADD,listenfd,&ev);
+
+    bzero(&serveraddr, sizeof(serveraddr));
+    serveraddr.sin_family = AF_INET;
+    char *local_addr="127.0.0.1";
+    inet_aton(local_addr,&(serveraddr.sin_addr));//htons(portnumber);
+    serveraddr.sin_port=htons(portnumber);
+
+
+    bind(listenfd_,(sockaddr *)&serveraddr, sizeof(serveraddr));
+    listen(listenfd_, 20);
+
+    maxi = 0;
 }
 
 TcpServer::~TcpServer()
 {
 
+}
+
+
+void TcpServer::EventRead()
+{
+    //TcpConnection * conn = new TcpConnection();
+    TcpConnection * conn = findConnection();
+
+    if (conn){
+        newConnection(0);
+    } else {
+        conn->handleRead(0);
+    }
+}
+
+void TcpServer::EventWrite()
+{
+    TcpConnection * conn = nullptr;
+    conn->handleWrite();
+}
+
+void TcpServer::EventClose()
+{
+    TcpConnection * conn = nullptr;
+    conn->handleClose();
+}
+
+void TcpServer::EventError()
+{
+    TcpConnection * conn = nullptr;
+    conn->handleError();
 }
 
 void TcpServer::newConnection(int sockfd/*,const InetAddress& peerAddr*/)
@@ -52,4 +120,9 @@ void TcpServer::removeConnection(const TcpConnection* & conn)
 {
     connections_.erase(conn->getName());
     delete conn;
+}
+
+TcpConnection* TcpServer::findConnection()
+{
+    return nullptr;
 }
