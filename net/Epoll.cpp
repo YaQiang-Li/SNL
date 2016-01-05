@@ -13,6 +13,21 @@ Epoll::~Epoll()
     close(epollFd_);
 }
 
+int Epoll::epollAdd(int fd, const Event &ev)
+{
+    epoll_ctl(epollFd_,EPOLL_CTL_ADD,listenfd,&ev);
+}
+
+int Epoll::epollDelete(int fd, const Event &ev)
+{
+    epoll_ctl(epollFd_,EPOLL_CTL_DEL,listenfd,&ev);
+}
+
+int Epoll::epollModify(int fd, const Event &ev)
+{
+    epoll_ctl(epollFd_,EPOLL_CTL_MOD,listenfd,&ev);
+}
+
 int Epoll::epollWait(EventArray* activeEvents)
 {
     int eventNum = epoll_wait(epollFd_,

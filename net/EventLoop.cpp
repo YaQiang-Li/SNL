@@ -34,15 +34,17 @@ void EventLoop::loop(int flags)
     } while( !loopDone_ );
 }
 
-void EventLoop::handleEvent(Event* events)
+void EventLoop::handleEvent(Event* event)
 {
-    int flag = events->events;
+    int flag = event->events;
+    int fd = event->data.fd;
+
     if (flag & EPOLLRDHUP) {
         server_->EventClose();
     }
 
     if (flag & EPOLLIN) {
-        server_->EventRead();
+        server_->EventRead(fd);
     }
 
     if (flag & EPOLLOUT) {
@@ -54,14 +56,27 @@ void EventLoop::handleEvent(Event* events)
     }
 }
 
-void EventLoop::updateChannel()
+void EventLoop::updateChannel(Epoll::CTL_TYPE type,int fd, Event ev)
 {
-    int a;
-    epoll_->epollAdd();
-    epoll_->epollModify();
-    epoll_->epollDelete();
-    epoll_->epollUpdate();
+    switch (type){
+        case Epoll::CTL_TYPE::ADD:
+            epoll_->epollAdd(fd,ev);
+            break;
+        case Epoll::CTL_TYPE::DEL:
+            epoll_->epollDelete(fd,ev);
+            break;
+        case Epoll::CTL_TYPE::MOD:
+            epoll_->epollModify(fd,ev);
+            break;
+        //case Epoll::CTL_TYPE::UPD:
+        //    epoll_->epollUpdate(fd);
+        //    break;
+        default:
+            std::cerr << "ctlType error:" << type << std::endl;
+            break;
+    }
 }
+
 void EventLoop::callPending()
 {
 

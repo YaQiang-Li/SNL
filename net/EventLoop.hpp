@@ -7,6 +7,7 @@
 #include "TcpServer.h"
 
 
+
 class EventLoop
 {
 public:
@@ -20,10 +21,11 @@ public:
     void setServer(TcpServer *server)
     { server_ = server; }
 
-    void updateChannel();
+    void updateChannel(Epoll::CTL_TYPE type, int fd, Event ev);
 
 private:
-    void handleEvent(Event* events);
+
+    void handleEvent(Event* event);
     Epoll* epoll_;
     bool loopDone_;
     EventArray activeEvents_;

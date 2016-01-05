@@ -17,7 +17,7 @@ public:
     TcpServer(EventLoop* loop);
     virtual ~TcpServer();
 
-    void EventRead();
+    void EventRead(int fd);
     void EventWrite();
     void EventClose();
     void EventError();
@@ -43,12 +43,12 @@ public:
     void setWriteCompleteCallback(const WriteCompleteCallback& cb)
     { writeCompleteCallback_ = cb; }
 
+
 private:
     void newConnection(int sockfd/* const InetAddress& peerAddr*/);
     void removeConnection(const TcpConnection* & conn);
-    TcpConnection* findConnection();
-
-    typedef std::map<std::string, TcpConnection*> ConnectionMap;
+    TcpConnection* findConnection(int fd);
+    typedef std::map<int, TcpConnection*> ConnectionMap;
     ConnectionMap connections_;
     std::string name_;
     std::string hostport_;
@@ -58,8 +58,10 @@ private:
     WriteCompleteCallback writeCompleteCallback_;
     EventLoop* loop_;
     string name_;
-    int listenfd_
-    Event accpetEvent_;
+    int listenfd_;
+    Event listenEvent_;
+    int listenEventFd_;
+    int acceptFd_;
 };
 
 

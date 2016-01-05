@@ -13,17 +13,20 @@ class Epoll {
         Epoll();
         virtual ~Epoll();
         int epollWait(EventArray* activeEvents);
-        int epollUpdate();
-        int epollAdd();
-        int epollDelete();
-        int epollModify();
+        //int epollUpdate(int fd, const Event &ev);
+        int epollAdd(int fd, const Event &ev);
+        int epollDelete(int fd, const Event &ev);
+        int epollModify(int fd, const Event &ev);
 
+    enum CTL_TYPE { ADD, MOD, DEL, UPD };
 
     private:
         int foreachEventsGetData(int eventNum, EventArray* eventArray);
         int epollFd_;
         EventArray events_;
 };
+
+
 
 #endif  // SNL_NET_EPOLL_H
 
